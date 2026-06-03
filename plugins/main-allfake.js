@@ -30,7 +30,7 @@ var handler = async function (m, conn, db) {
 
     // Obtener información del usuario
     let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-    let fotoperfil = await conn.profilePictureUrl(who, 'image').catch(() => 'https://h.uguu.se/KxeHKwih.jpg')
+    let fotoperfil = await conn.profilePictureUrl(who, 'image').catch(() => 'https://i.postimg.cc/h41y0fGn/images-(1).jpg')
 
     // Obtener nacionalidad
     let api = await axios.get(`https://deliriussapi-oficial.vercel.app/tools/country?text=${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}`)
