@@ -118,7 +118,7 @@ var handler = async function (m, conn, db) {
             externalAdReply: {
                 showAdAttribution: true,
                 title: "Texto del bot",
-                body: '🚀 ♡↝𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾',
+                body: 'Storm Bot 🇦🇱',
                 previewType: "PHOTO",
                 thumbnailUrl: "https://h.uguu.se/KxeHKwih.jpg",
                 sourceUrl: "https://whatsapp.com/channel/0029Vb5oUp43LdQUVViHwc0m",
