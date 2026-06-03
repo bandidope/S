@@ -1,39 +1,58 @@
-import fetch from 'node-fetch'
-import { Sticker} from 'wa-sticker-formatter'
+/**
+ * 📂 COMANDO: Uchiha Brat Generator (Sylphy API)
+ * 📝 DESCRIPCIÓN: Crea stickers estilo Brat personalizables usando el endpoint de Sylphy.
+ * 👤 CREADOR: Barboza Developer
+ * ⚡ CANAL: Barboza Developer x Zona Developers
+ * 🔌 API: https://sylphyy.xyz
+ */
 
-let handler = async (m, { conn, args}) => {
-  await conn.sendMessage(m.chat, { react: { text: '⏳', key: m.key}})
+import fetch from "node-fetch"
 
-  try {
-    const texto = args.join(' ')
-    if (!texto) throw new Error('Ejemplo:.bratv hola mundo')
+const handler = async (m, { conn, text, usedPrefix, command }) => {
+    let contenidoTexto = text || (m.quoted && m.quoted.text ? m.quoted.text : '')
 
-    const urlApi = `https://api.ypnk.dpdns.org/api/video/bratv?text=${encodeURIComponent(texto)}`
-    const respuesta = await fetch(urlApi)
-    if (!respuesta.ok) throw new Error('Error al obtener el video')
+    if (!contenidoTexto) {
+        let menuAlerta = `☠️ ═══ 〖 𝖡𝖱𝖠𝖳 𝖦𝖤𝖭𝖤𝖱𝖠𝖳𝖮𝖱 〗 ═══ ☠️\n\n`
+        menuAlerta += `☣️ *ESTADO:* Esperando parámetros de texto...\n`
+        menuAlerta += `⚠️ *REQUISITO:* Por favor introduce el texto para el sticker.\n\n`
+        menuAlerta += `📌 *EJEMPLO DE USO:* \n`
+        menuAlerta += `> ${usedPrefix + command} Sasuke Uchiha\n`
+        menuAlerta += `■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■`
+        return conn.reply(m.chat, menuAlerta, m)
+    }
 
-    const videoBuffer = await respuesta.buffer()
-    const sticker = new Sticker(videoBuffer, {
-      pack: 'Video BRAT',
-      author: 'Yupra AI',
-      type: 'crop',
-      quality: 50
-})
+    await m.react('🟢')
 
-    await conn.sendMessage(m.chat, {
-      sticker: await sticker.toBuffer()
-}, { quoted: m})
-    await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key}})
+    try {
+        const apiBrat = "https://sylphyy.xyz/tools/brat"
+        const claveOculta = Buffer.from("c3lscGh5LTZmMTUwZA==", 'base64').toString('utf-8')
+        const esAnimado = /animado|gif/i.test(command) ? 'Anim' : 'Static'
+        
+        const enlaceFinal = `${apiBrat}?text=${encodeURIComponent(contenidoTexto)}&color=Blanco&fondo=Negro&type=${esAnimado}&api_key=${claveOculta}`
 
-} catch (e) {
-    console.error(e)
-    await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key}})
-    m.reply('Error al crear el sticker de video')
+        let response = await fetch(enlaceFinal)
+        
+        if (!response.ok) {
+            await m.react('❌')
+            return conn.reply(m.chat, `❌ Error del servidor externo al procesar el sticker.`, m)
+        }
+
+        let bufferSticker = await response.buffer()
+
+        await conn.sendMessage(m.chat, { 
+            sticker: bufferSticker
+        }, { quoted: m })
+
+        await m.react('🔥')
+
+    } catch (e) {
+        console.error(e)
+        await m.react('❌')
+    }
 }
-}
 
-handler.help = ['bratv <texto>']
+handler.help = ['bratv', 'bratanimado']
 handler.tags = ['sticker']
-handler.command = /^bratv$/i
+handler.command = /^(bratv|bratanimado|bratgif)$/i
 
 export default handler
