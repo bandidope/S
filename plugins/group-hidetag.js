@@ -18,7 +18,7 @@ let handler = async (m, { conn, text, participants, isAdmin }) => {
         externalAdReply: {
           title: 'WhatsApp Business ✅',
           body: 'Hola Soy Storm bot',
-          thumbnailUrl: 'https://h.uguu.se/KxeHKwih.jpg',
+          thumbnailUrl: 'https://i.postimg.cc/h41y0fGn/images-(1).jpg',
           sourceUrl: 'https://https://whatsapp.com/channel/0029Vb5oUp43LdQUVViHwc0m',
           mediaType: 1,
           renderLargerThumbnail: false // Esto hace que la foto se vea pequeña como reply
