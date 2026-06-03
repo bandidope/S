@@ -20,9 +20,9 @@ var handler = async (m, { conn, text }) => {
     }
 }
 
-handler.help = ['demote'];
+handler.help = ['quitaradmin'];
 handler.tags = ['group'];
-handler.command = ['demote', 'degradar', 'quitarpija'];
+handler.command = ['demote', 'quitaradmin', 'quitarpija'];
 handler.group = true;
 handler.admin = true;
 handler.botAdmin = true;
