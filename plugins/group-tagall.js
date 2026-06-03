@@ -47,7 +47,7 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args }) 
   messageText += `*𝖡𝗒 Whois • Storm 𝖡𝗈𝗍*`;
 
   // Nueva imagen proporcionada
-  const imageUrl = 'https://whatsapp.com/channel/0029Vb5oUp43LdQUVViHwc0m';
+  const imageUrl = 'https://i.postimg.cc/h41y0fGn/images-(1).jpg';
   const thumb = await (await fetch(imageUrl)).buffer();
 
   const fkontak = {
