@@ -20,7 +20,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
       if (!img) {
         return conn.reply(m.chat,
 `╭╾━━━━╼ 〔 ❌ 〕 ╾━━━━╼╮
-│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝕰𝖗𝖗𝖔𝖗*
+│  👟 *𝕭𝖔𝖙 𝕰𝖗𝖗𝖔𝖗*
 │
 │ ❌ *𝖥𝖺𝗅𝗅𝗈 𝖺𝗅 𝖼𝗋𝖾𝖺𝗋:*
 │    𝖭𝗈 𝗌𝖾 𝗉𝗎𝖽𝗈 𝗉𝗋𝗈𝖼𝖾𝗌𝖺𝗋.
@@ -61,7 +61,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
     } else {
       return conn.reply(m.chat,
 `╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮
-│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝕾𝖙𝖎𝖈𝖐𝖊𝖗𝖘*
+│  👟 *𝕭𝖔𝖙 𝕾𝖙𝖎𝖈𝖐𝖊𝖗𝖘*
 │
 │ 📸 *𝖤𝗇𝗏𝗂𝖺 𝗂𝗆𝖺𝗀𝖾𝗇 𝗈 𝗏𝗂𝖽𝖾𝗈*
 │      𝗋𝖾𝗌𝗉𝗈𝗇𝖽𝗂𝖾𝗇𝖽𝗈 𝖺 𝖾𝗌𝗍𝖾 𝗆𝗌𝗀.
@@ -71,7 +71,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
 │ 🔗 *𝖴𝗌𝖺 𝗎𝗇 𝖾𝗇𝗅𝖺𝖼𝖾:*
 │     ${usedPrefix + command} 𝗎𝗋𝗅
 │
-│ 🛹 "𝖮𝖿𝖿 𝖳𝗁𝖾 𝖶𝖺𝗅𝗅 𝖲𝗍𝗒𝗅𝖾"
+│ 🛹 "Powered Team Nightwish"
 ╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯\n*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`, m)
     }
   }
