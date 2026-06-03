@@ -106,7 +106,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
 
     default:
       if (!/[01]/.test(command)) return m.reply(`
-🏎️💨 ᴠᴀɴs ʙᴏᴛ - ᴄᴏɴᴛʀᴏʟ ᴄᴇɴᴛᴇʀ
+🏎️💨 ᴄᴏɴᴛʀᴏʟ ᴄᴇɴᴛᴇʀ
 ──────────────────────
 🚘 *Ajustes de Velocidad y Seguridad*
 
@@ -131,7 +131,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
   let scopeText = isAll ? 'ＴＯＤＯ ＥＬ ＢＯＴ' : isUser ? 'ＵＳＵＡＲＩＯ' : 'ＥＳＴＥ ＣＨＡＴ';
 
   let confirm = `
-🚘 *V A N S  B O T  M D* 🚘
+🚘 *S T O R M   B O T* 🚘
 ──────────────────────
 🚦 *ESTADO DE LA FUNCIÓN*
 
