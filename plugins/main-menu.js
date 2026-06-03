@@ -43,7 +43,7 @@ const handler = async (m, { conn, usedPrefix }) => {
     const tagUsuario = `@${m.sender.split('@')[0]}`;
     const userName = (await conn.getName?.(m.sender)) || tagUsuario;
 
-    const adText = ["Vans System", "Eliud Interface", "Urban Bot"].getRandom();
+    const adText = ["Storm System", "Whois Interface", "Urban Bot"].getRandom();
 
     let thumbnailBuffer;
     try {
@@ -59,7 +59,7 @@ const handler = async (m, { conn, usedPrefix }) => {
         locationMessage: {
           name: adText,
           jpegThumbnail: thumbnailBuffer,
-          vcard: "BEGIN:VCARD\nVERSION:3.0\nN:;Eliud;;;\nFN:Eliud\nORG:VansBot\nEND:VCARD"
+          vcard: "BEGIN:VCARD\nVERSION:3.0\nN:;Eliud;;;\nFN:Whois\nORG:StormBot\nEND:VCARD"
         }
       },
       participant: "0@s.whatsapp.net"
