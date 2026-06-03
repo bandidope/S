@@ -16,7 +16,7 @@ const saludarSegunHora = () => {
 };
 
 // Imagen proporcionada y diseño de Vans
-const imgVans = 'https://h.uguu.se/KxeHKwih.jpg';
+const imgVans = 'https://i.postimg.cc/h41y0fGn/images-(1).jpg';
 const borderTop = '╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮';
 const borderBottom = '╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯';
 
@@ -54,7 +54,7 @@ const handler = async (m, { conn, usedPrefix }) => {
     }
 
     const fkontak = {
-      key: { participants: "0@s.whatsapp.net", fromMe: false, id: "VansBot" },
+      key: { participants: "0@s.whatsapp.net", fromMe: false, id: "StormBot" },
       message: {
         locationMessage: {
           name: adText,
