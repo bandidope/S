@@ -19,7 +19,7 @@ handler.before = async function (m, { conn, participants, groupMetadata}) {
         message: {
             locationMessage: {
                 name: "*𝐒𝐭𝐨𝐫𝐦 𝐁𝐨𝐭 🇦🇱*",
-                jpegThumbnail: await (await fetch('https://h.uguu.se/KxeHKwih.jpg')).buffer(),
+                jpegThumbnail: await (await fetch('https://qu.ax/uSf9r.jpg')).buffer(),
                 vcard:
                     "BEGIN:VCARD\n" +
                     "VERSION:3.0\n" +

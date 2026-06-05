@@ -1,18 +1,25 @@
 let toM = a => '@' + a.split('@')[0]
+
 function handler(m, { groupMetadata }) {
-let ps = groupMetadata.participants.map(v => v.id)
-let a = ps.getRandom()
-let b
-do b = ps.getRandom()
-while (b === a)
+    let ps = groupMetadata.participants.map(v => v.id)
+    let a = ps.getRandom()
+    
+    let message = `
+╭──〔 *⚡ Arceus Whois  ⚡* 〕──╮
+│
+│ 🤺 *Elección De Sala*
+│
+│ 👤 ${toM(a)}
+│
+│ 📝 _Bebe, busca la salita que ya_
+│ _viene el vs. ¡No te hagas el loco!_ 📌
+│
+╰───────────────────────────╯`.trim()
 
-m.reply(`👟 *Ｖａｎｓ  Ｂｏｔ* 👟
-
-*${toM(a)},* _Busca la salita bebe que ya viene el vs_ 📌
-
-> 🛸 *𝖡𝗒 𝖤𝗅𝗂𝗎𝖽*`, null, {
-mentions: [a, b]
-})}
+    m.reply(message, null, {
+        mentions: [a]
+    })
+}
 
 handler.help = ['donarsala']
 handler.tags = ['freefire']

@@ -1,65 +1,72 @@
-import fetch from 'node-fetch';
+/**
+ * 📂 COMANDO: tiktok2
+ * 📝 DESCRIPCIÓN: Descarga avanzada de TikTok con link de API visible.
+ * 👤 CREADOR: Barboza Developer
+ * ⚡ CANAL: Barboza Developer x Zona Developers
+ * 🔌 API: EvoGB API (https://api.evogb.org)
+ */
 
-const handler = async (m, { conn, text, command}) => {
-  if (!text) {
-    return conn.reply(m.chat, '❌ ¡Necesito un enlace de TikTok! Por favor, proporciona uno después del comando.', m);
+import axios from 'axios'
+
+async function tiktokScraper(url) {
+    try {
+        const key64 = 'c2FzdWtl' 
+        const decodedKey = Buffer.from(key64, 'base64').toString('utf-8')
+        
+        const { data } = await axios.get(`https://api.evogb.org/dl/tiktok?url=${encodeURIComponent(url)}&key=${decodedKey}`)
+        
+        if (!data.status) return { status: false }
+        return {
+            status: true,
+            title: data.data.title,
+            author: data.data.author.nickname,
+            user: data.data.author.unique_id,
+            duration: data.data.duration,
+            likes: data.data.stats.likes,
+            shares: data.data.stats.shares,
+            download: data.data.dl
+        }
+    } catch (e) {
+        return { status: false }
+    }
 }
 
-  if (!text.match(/(tiktok\.com\/|vt\.tiktok\.com\/)/i)) {
-    return conn.reply(m.chat, '🤔 Parece que el enlace no es de TikTok. Por favor, asegúrate de enviar un enlace válido.', m);
+var handler = async (m, { conn, text, usedPrefix, command }) => {
+    let query = text ? text.trim() : (m.quoted?.text || null)
+    if (!query) return conn.reply(m.chat, `✨ *¿Qué video deseas bajar?*\n\n> *Ejemplo:* ${usedPrefix + command} https://vt.tiktok.com/...`, m)
+
+    await m.react('⚡')
+
+    const res = await tiktokScraper(query)
+
+    if (!res.status) {
+        await m.react('❌')
+        return m.reply('⚠️ *Error al procesar el enlace.*')
+    }
+
+    let ui = `┏━━━━━━━━━━━━━━━━┓\n`
+    ui += `┃  ⭐ *TIKTOK DOWNLOAD* ┃\n`
+    ui += `┗━━━━━━━━━━━━━━━━┛\n\n`
+    ui += `📝 *TÍTULO:* ${res.title.slice(0, 100)}...\n`
+    ui += `👤 *AUTOR:* ${res.author} (@${res.user})\n`
+    ui += `⏱️ *DURACIÓN:* ${res.duration}\n`
+    ui += `📊 *STATS:* ❤️ ${res.likes.toLocaleString()} | 🔄 ${res.shares.toLocaleString()}\n\n`
+    ui += `🔌 *API:* https://api.evogb.org\n`
+    ui += `⚡ *Powered by Barboza Developer*\n`
+    ui += `🌐 *Zona Developers*`
+
+    await conn.sendMessage(m.chat, { 
+        video: { url: res.download }, 
+        caption: ui,
+        mimetype: 'video/mp4',
+        fileName: `tiktok_v2_barboza.mp4`
+    }, { quoted: m })
+
+    await m.react('✅')
 }
 
-  try {
-    const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(text)}`;
-    const response = await fetch(apiUrl);
-    const result = await response.json();
+handler.help = ['tiktok']
+handler.tags = ['downloader']
+handler.command = /^(tiktok|tt)$/i
 
-    if (!result || result.code!== 0 ||!result.data ||!result.data.play) {
-      let errorMessage = '❌ No pude descargar el video. Asegúrate de que el enlace sea correcto, público y esté disponible.';
-      if (result && result.msg) {
-        errorMessage += `\nDetalles: ${result.msg}`;
-}
-      return conn.reply(m.chat, errorMessage, m);
-}
-
-    // Usar el enlace sin marca de agua si está disponible
-    const videoUrlNoWatermark = result.data.play;
-
-    if (!videoUrlNoWatermark) {
-      return conn.reply(m.chat, '❌ No se encontró una URL de video sin marca de agua.', m);
-}
-
-    const author = result.data.author?.nickname || 'Desconocido';
-    const description = result.data.title || 'Sin descripción';
-    const duration = result.data.duration? formatDuration(result.data.duration): 'N/A';
-    const size = result.data.size? `${(result.data.size / (1024 * 1024)).toFixed(2)} MB`: 'N/A';
-
-    const caption = `
-✅ *TikTok descargado sin marca de agua:*
-
-👤 *Autor:* ${author}
-📝 *Descripción:* ${description}
-⏳ *Duración:* ${duration}
-📏 *Tamaño:* ${size}
-`;
-
-    await conn.sendMessage(m.chat, {
-      video: { url: videoUrlNoWatermark},
-      caption: caption,
-}, { quoted: m});
-
-} catch (error) {
-    console.error('Error al descargar TikTok:', error);
-    conn.reply(m.chat, '❌ ¡Oops! Algo salió mal al intentar descargar el video. Intenta de nuevo más tarde.', m);
-}
-};
-
-function formatDuration(seconds) {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds < 10? '0': ''}${remainingSeconds}`;
-}
-
-handler.command = /^(tiktok|tt)$/i;
-
-export default handler;
+export default handler

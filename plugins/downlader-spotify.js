@@ -1,60 +1,73 @@
-import fetch from 'node-fetch'
+/**
+ * 📂 COMANDO: Spotify Pro
+ * 📝 DESCRIPCIÓN: Descarga música de Spotify (Search & DL).
+ * 👤 CREADOR: Barboza Developer
+ * ⚡ CANAL: Barboza Developer x Zona Developers
+ * 🔌 API: https://api.evogb.org
+ */
+
 import axios from 'axios'
 
-const handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) throw `_*[ ⚠️ ] Ingresa el nombre de la canción*_\n\n_Ejemplo:_\n${usedPrefix + command} Lupita`
+var handler = async (m, { conn, text, usedPrefix, command }) => {
+    let query = text ? text.trim() : (m.quoted?.text || null)
+    if (!query) return conn.reply(m.chat, `✨ *Ingresa el nombre de la canción*\n\n> *Ejemplo:* ${usedPrefix + command} Provenza`, m)
 
-    try { 
-        const searchRes = await axios.get(`https://sylphy.xyz/search/spotify?q=${encodeURIComponent(text)}&api_key=sylphy-6f150d`)
-        const searchData = searchRes.data
+    await m.react('⏳')
 
-        if (!searchData.status || !searchData.result || searchData.result.length === 0) {
-            throw `_*[ ⚠️ ] No se encontraron resultados para: "${text}"*_`
+    try {
+        const _0x4a1b = 'ZWt1c2Fz' 
+        const key = Buffer.from(_0x4a1b, 'base64').toString('utf-8').split('').reverse().join('')
+
+        const searchRes = await axios.get(`https://api.evogb.org/search/spotify?query=${encodeURIComponent(query)}&key=${key}`)
+        
+        if (!searchRes.data.status || !searchRes.data.result.length) {
+            await m.react('❌')
+            return m.reply('⚠️ *No se encontraron resultados.*')
         }
 
-        const trackUrl = searchData.result[0].url
-
-        const downloadRes = await fetch(`https://sylphy.xyz/download/spotify?url=${encodeURIComponent(trackUrl)}&api_key=sylphy-6f150d`)
-        const dlData = await downloadRes.json()
-
-        if (!dlData.status) {
-            throw `_*[ ❌ ] Error al procesar la descarga de la API.*_`
+        const track = searchRes.data.result[0]
+        const trackUrl = `https://open.spotify.com/track/${track.id}`
+        
+        const dlRes = await axios.get(`https://api.evogb.org/dl/spotify?url=${encodeURIComponent(trackUrl)}&key=${key}`)
+        
+        if (!dlRes.data.status) {
+            await m.react('❌')
+            return m.reply('⚠️ *Error al obtener el audio.*')
         }
 
-        const res = dlData.result
-        const img = res.album.images[0].url
-        const artistas = res.artists.map(a => a.name).join(', ')
-
-        const info = `
-⧁ 𝙏𝙄𝙏𝙐𝙇𝙊
-» ${res.name}
-﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
-⧁ 𝘼𝙍𝙏𝙄𝙎𝙏𝘼
-» ${artistas}
-﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
-⧁ 𝘼𝙇𝘽𝙐𝙈
-» ${res.album.name || 'N/A'}
-﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
-⧁ 𝙀𝙉𝙇𝘼𝘾𝙀
-» ${trackUrl}
-
-_*🎶 Enviando audio...*_`.trim()
-
-        await conn.sendFile(m.chat, img, 'thumbnail.jpg', info, m)
+        const data = dlRes.data.data
+        let ui = `┏━━━━━━━━━━━━━━━━┓\n`
+        ui += `┃   🎵 *SPOTIFY DL* ┃\n`
+        ui += `┗━━━━━━━━━━━━━━━━┛\n\n`
+        ui += `🎵 *TÍTULO:* ${data.name}\n`
+        ui += `👤 *ARTISTA:* ${data.artist}\n`
+        ui += `💿 *ALBUM:* ${data.album}\n`
+        ui += `⏱️ *DURACIÓN:* ${data.duration}\n\n`
+        ui += `━━━━━━━━━━━━━━━━━━━━\n`
+        ui += `⚡ *By: Barboza Developer*\n`
+        ui += `🌐 *Zona Developers*`
 
         await conn.sendMessage(m.chat, { 
-            audio: { url: res.download_url }, 
-            fileName: `${res.name}.mp3`, 
-            mimetype: 'audio/mpeg' 
+            image: { url: data.imageHD || data.image }, 
+            caption: ui 
         }, { quoted: m })
 
+        await conn.sendMessage(m.chat, { 
+            audio: { url: data.url }, 
+            mimetype: 'audio/mpeg', 
+            fileName: `${data.name}.mp3` 
+        }, { quoted: m })
+
+        await m.react('✅')
+
     } catch (e) {
-        console.error(e)
-        await conn.reply(m.chat, `❌ _*Ocurrió un error con la API de Sylphy. Revisa la consola.*_`, m)
+        await m.react('❌')
+        m.reply('⚠️ *Error en el proceso.*')
     }
 }
 
+handler.help = ['spotify', 'spotify2']
 handler.tags = ['descargas']
-handler.command = ['spoti', 'spotify', 'play2']
+handler.command = /^(spotify|spotdl|spotifydl)$/i
 
 export default handler

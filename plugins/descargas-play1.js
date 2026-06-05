@@ -1,52 +1,67 @@
+// code creador por barboza 
+// Se te agradece que dejes mis créditos gracias disfruta el código
 
 import fetch from "node-fetch"
 import yts from 'yt-search'
 
 const handler = async (m, { conn, text, usedPrefix, command }) => {
+    if (!text) return conn.reply(m.chat, `*Ingrese nombre o link*\n\n*Ejemplo:* ${usedPrefix}${command} Yan Block 444`, m)
+
+    const isVideo = command === 'play2'
+    await m.react(isVideo ? '🎥' : '🎧')
+
     try {
-        if (!text.trim()) return conn.reply(m.chat, `❀ Por favor, ingresa el nombre o link de YouTube.`, m)
-        await m.react('🕒')
+        let videoUrl = text
+        let duration = ''
 
-        const videoMatch = text.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/|v\/))([a-zA-Z0-9_-]{11})/)
-        const query = videoMatch ? 'https://youtu.be/' + videoMatch[1] : text
-        const search = await yts(query)
-        const result = videoMatch ? search.videos.find(v => v.videoId === videoMatch[1]) || search.all[0] : search.all[0]
-
-        if (!result) throw 'ꕥ No se encontraron resultados.'
-
-        const { title, thumbnail, timestamp, views, url, author } = result
-        const info = `「✦」Descargando *<${title}>*\n\n> ❑ Canal » *${author.name}*\n> ♡ Vistas » *${views.toLocaleString()}*\n> ✧︎ Duración » *${timestamp}*\n> ➪ Link » ${url}`
-
-        const thumb = (await conn.getFile(thumbnail)).data
-        await conn.sendMessage(m.chat, { image: thumb, caption: info }, { quoted: m })
-
-        const isAudio = ['play', 'yta', 'ytmp3', 'playaudio'].includes(command)
-        const endpoint = isAudio ? 'ytaudio' : 'ytvideo'
-
-        const res = await fetch(`https://api-adonix.ultraplus.click/download/${endpoint}?apikey=AdonixKeyvr85v01953&url=${encodeURIComponent(url)}`)
-        const json = await res.json()
-
-        if (!json.status || !json.data?.url) throw '⚠ No se pudo obtener el archivo del servidor Adonix.'
-
-        if (isAudio) {
-            await conn.sendMessage(m.chat, { 
-                audio: { url: json.data.url }, 
-                fileName: `${title}.mp3`, 
-                mimetype: 'audio/mpeg' 
-            }, { quoted: m })
-        } else {
-            await conn.sendFile(m.chat, json.data.url, `${title}.mp4`, `> ❀ ${title}`, m)
+        if (!text.match(/youtu/gi)) {
+            const search = await yts(text)
+            if (!search.all.length) {
+                await m.react('❌')
+                return m.reply('❌ Sin resultados')
+            }
+            videoUrl = search.videos[0].url
+            duration = search.videos[0].timestamp
         }
 
-        await m.react('✔️')
+        const endpoint = isVideo ? 'ytmp4' : 'ytmp3'
+        const apiUrl = `https://api.delirius.store/download/${endpoint}?url=${encodeURIComponent(videoUrl)}${isVideo ? '&format=360p' : ''}`
+        
+        const res = await fetch(apiUrl)
+        const json = await res.json()
+
+        if (!json.status || !json.data) {
+            await m.react('❌')
+            return m.reply('⚠️ Error API')
+        }
+
+        const { title, author, image, download } = json.data
+
+        let info = `📌 *${title}*\n👤 *${author}*\n⏱️ *${duration}*\n📦 *${isVideo ? 'MP4' : 'MP3'}*\n\n*By: Whois Developer*`
+
+        if (isVideo) {
+            await conn.sendMessage(m.chat, { 
+                video: { url: download }, 
+                caption: info,
+                mimetype: 'video/mp4'
+            }, { quoted: m })
+        } else {
+            await conn.sendMessage(m.chat, { image: { url: image }, caption: info }, { quoted: m })
+            await conn.sendMessage(m.chat, { 
+                audio: { url: download }, 
+                mimetype: 'audio/mpeg',
+                fileName: `${title}.mp3`
+            }, { quoted: m })
+        }
+
+        await m.react('✅')
 
     } catch (e) {
-        await m.react('✖️')
-        return conn.reply(m.chat, `⚠︎ Error: ${e}`, m)
+        await m.react('❌')
+        conn.reply(m.chat, '🛑 Error', m)
     }
 }
 
-handler.command = /^(play|yta|ytmp3|play2|ytv|ytmp4|playaudio|mp4)$/i
-handler.group = false
+handler.command = ['play', 'play2']
 
 export default handler
